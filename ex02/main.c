@@ -11,8 +11,8 @@ void uart_init()
 	UBRR0H = UART_BAUD_SETTING >> 8;
 	UBRR0L = UART_BAUD_SETTING;
 
-	//enable transmitter
-	UCSR0B = 1 << TXEN0;
+	//enable transmitter and receiver
+	UCSR0B = 1 << TXEN0 | 1 << RXEN0;
 
 	//set frame format (8data, no parity, 1 stop)
 	UCSR0C = (1 << UCSZ01) | (1 << UCSZ00);
@@ -26,13 +26,20 @@ void uart_tx(char c)
 	UDR0 = c;
 }
 
+char uart_rx(void)
+{
+	while (((UCSR0A >> RXC0) & 1) == 0);
+
+	char ret = UDR0;
+	return (ret);
+}
+
 int main()
 {
 	uart_init();
 
 	while (1)
 	{
-		_delay_ms(1000);
-		uart_tx('Z');
+		uart_tx(uart_rx());
 	}
 }
