@@ -111,7 +111,7 @@ int8_t ft_strcmp(const char * str1, const char * str2)
 		str1++;
 		str2++;
 	}
-	return 0;
+	return *str1 - *str2;
 }
 
 void blink_leds()
